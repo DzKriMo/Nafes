@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "342707494946",
+    "project_id": "nafes-59aaa",
+    "storage_bucket": "nafes-59aaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342707494946:android:3a678405293e96b7f2aa7b",
+        "android_client_info": {
+          "package_name": "com.thekrimo.nafes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBDqMnSqMcf_pOs2-_j_tnjxL6NfvZKyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
