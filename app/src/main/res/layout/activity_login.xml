@@ -149,7 +149,7 @@
     <ImageView
         android:layout_width="450dp"
         android:layout_height="466dp"
-        android:src="@drawable/first"
+        android:src="@drawable/img"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="-10dp"
         app:layout_constraintEnd_toEndOf="parent"
