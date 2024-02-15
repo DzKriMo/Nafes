@@ -25,26 +25,27 @@ class SignUp : BaseActivity() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
+            val username=  binding.nameEditText.text.toString()
             val cpassword = binding.confirmpasswordEditText.text.toString()
-            if (email.isNotEmpty() && password.isNotEmpty()&& cpassword.isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty()&& cpassword.isNotEmpty()&& username.isNotEmpty()) {
                 if(cpassword==password){
 
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this){task ->
                         if(task.isSuccessful){
-                            Toast.makeText(baseContext,"User Created!.",Toast.LENGTH_SHORT).show()
+                            showToast("User Created!.")
                             startActivity(Intent(this,MainActivity::class.java))
                             finish()
                         }
                         else{
-                            Toast.makeText(baseContext,"Unable To Sign Up! Please Try Again Later!.", Toast.LENGTH_SHORT).show()
+                            showToast("Unable To Sign Up! Please Try Again Later!.")
                         }
                     }
             }else{
-                Toast.makeText(baseContext,"Passwords Mismatch!.", Toast.LENGTH_SHORT).show()
+                showToast("Passwords Mismatch!.")
             }
             }else{
-                Toast.makeText(baseContext,"Email Or Password Cannot Be Empty!.",Toast.LENGTH_SHORT).show()
+                showToast("Email Or Password Cannot Be Empty!.")
             }
         }
 
@@ -120,5 +121,10 @@ class SignUp : BaseActivity() {
         animation.repeatCount = 1
         animation.repeatMode = ObjectAnimator.REVERSE
         return animation
+    }
+
+
+    private fun showToast(text: String){
+        Toast.makeText(baseContext,text,Toast.LENGTH_SHORT).show()
     }
 }

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Sign Up"
+            android:text="Register"
             android:textColor="#10406b"
             android:textSize="32dp"
             android:textStyle="bold"
@@ -113,7 +113,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/bttn"
-            android:text="Sign Up"
+            android:text="Next"
             android:textColor="#f0f0f0"
             android:fontFamily="@font/louisgeorgecafe"
             android:textStyle="bold"
@@ -167,38 +167,42 @@
 
 
 
+
     <ImageView
         android:layout_width="450dp"
         android:layout_height="466dp"
-        android:src="@drawable/first"
+        android:src="@drawable/img"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="-10dp"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="-30dp"
         android:elevation="10dp"
         android:id="@+id/imageView1"
+
+
         />
     <ImageView
         android:layout_width="450dp"
-        android:layout_height="466dp"
-        android:src="@drawable/second"
+        android:layout_height="472dp"
+        android:src="@drawable/img_1"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="-10dp"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="-30dp"
-        android:layout_marginStart="-10dp"
+        android:layout_marginStart="30dp"
         android:id="@+id/imageView2"
+        app:layout_constraintWidth_percent="1.1"
         android:elevation="5dp"/>
     <ImageView
-        android:layout_width="450dp"
-        android:layout_height="466dp"
-        android:src="@drawable/third"
+        android:layout_width="0dp"
+        android:layout_height="480dp"
+        android:src="@drawable/img_2"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="-10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="-30dp"
-        android:layout_marginStart="-20dp"
+        android:layout_marginTop="-35dp"
+        app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/imageView3"
+        app:layout_constraintWidth_percent="1.2"
 
         />
 

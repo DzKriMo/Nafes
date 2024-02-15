@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
@@ -34,12 +35,12 @@ class Login : BaseActivity() {
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
                         } else {
-                            Toast.makeText(baseContext, "Login Failed", Toast.LENGTH_SHORT).show()
+                            showToast("Login Failed")
                         }
 
                     }
             } else {
-                Toast.makeText(baseContext, "Email Or Password Cannot Be Empty", Toast.LENGTH_SHORT).show()
+               showToast("Email Or Password Cannot Be Empty")
             }
         }
 
@@ -49,20 +50,12 @@ class Login : BaseActivity() {
                 auth.sendPasswordResetEmail(email)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(
-                                baseContext,
-                                "Password Reset link sent, Check Your Inbox.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                           showToast("Password Reset link sent, Check Your Inbox.")
                         } else {
-                            Toast.makeText(
-                                baseContext,
-                                "Unable To send Password Reset Link.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        showToast("Unable To send Password Reset Link.")
                         }
                     }
-            } else Toast.makeText(baseContext, "Email Is Empty!!.", Toast.LENGTH_SHORT).show()
+            } else showToast("Email Is Empty!!.")
         }
 
         binding.showPassword.setOnCheckedChangeListener { _, isChecked ->
@@ -74,6 +67,9 @@ class Login : BaseActivity() {
         }
 
         startWaveAnimation()
+
+
+
 
 
 
@@ -122,6 +118,10 @@ class Login : BaseActivity() {
         animation.repeatCount = 1
         animation.repeatMode = ObjectAnimator.REVERSE
         return animation
+    }
+
+    private fun showToast(text:String){
+        Toast.makeText(baseContext,text,Toast.LENGTH_SHORT).show()
     }
 
 

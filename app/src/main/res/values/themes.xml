@@ -5,7 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="fontFamily">@font/louisgeorgecafe</item>
         <item name="android:colorPrimary">#3D85C6</item>
-
+        <item name="android:textAllCaps">false</item>
 
         <item name="android:windowEnterAnimation">@anim/animate_slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/animate_slide_out_right</item>

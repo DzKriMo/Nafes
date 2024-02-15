@@ -110,12 +110,12 @@ class GetStarted : BaseActivity() {
         Question(
             "When Was The Last Time You Thought About Suicide?",
             listOf(
-                Answer("Never", 10),
-                Answer("Over a year Ago", 10),
-                Answer("Over 3 months ago", 10),
-                Answer("Over a month ago", 10),
-                Answer("Over 2 weeks ago", 10),
-                Answer("In the last 2 Weeks", 9),
+                Answer("Never", 9),
+                Answer("Over a year Ago", 9),
+                Answer("Over 3 months ago", 9),
+                Answer("Over a month ago", 9),
+                Answer("Over 2 weeks ago", 9),
+                Answer("In the last 2 Weeks", 69420),
 
 
                 )
@@ -175,7 +175,7 @@ class GetStarted : BaseActivity() {
                     userAnswers.add(Response(question.questionText, answer.answerText))
                     // next question 3la 7sab l answer
                     currentQuestionIndex = answer.nextQuestionIndex
-                    if (currentQuestionIndex == 9) {
+                    if (currentQuestionIndex == 69420) {
                         startActivity(Intent(this, suicide::class.java))
 
                     }
