@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment"
+    android:background="#E0ECDE"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#393939"
+        android:text="We have chosen:"
+        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/abeezee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:id="@+id/chosen"
+        android:textSize="20dp"
+        />
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/img"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        app:cardCornerRadius="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chosen"
+        android:layout_marginTop="30dp"
+        app:cardElevation="5dp"
+        >
+
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_1" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/img"
+        android:fontFamily="@font/abeezee"
+        android:text="Therapist name"
+        android:textColor="#393939"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:textSize="15dp"
+        android:id="@+id/therapistName"
+        />
+
+
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/question_bottom"
+        android:text="Based on your answers we belive that this therapist is the best for your case"
+        android:textColor="#393939"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="30dp"
+        android:textSize="16dp"
+        android:fontFamily="@font/abeezee"
+        android:id="@+id/bottomText"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="25dp"
+        app:layout_constraintTop_toBottomOf="@id/therapistName"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomText"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bttn"
+                android:id="@+id/therapistProfile"
+                android:text="Therapist Profile"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginVertical="20dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bttn"
+                android:id="@+id/session"
+                android:text="Schedule a session"
+                app:layout_constraintTop_toBottomOf="@id/therapistProfile"
+                android:layout_marginVertical="20dp"
+                />
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="230dp"
+        android:src="@drawable/img_18"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="-10dp"
+        android:layout_marginEnd="-5dp"
+        android:layout_marginTop="-10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_19"
+        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="-10dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottomText"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="-51dp"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="-10dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottomText"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginEnd="-51dp"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,55 +1,62 @@
 package com.thekrimo.nafes
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
-import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
 import com.thekrimo.nafes.databinding.ActivitySignUpBinding
 
 class SignUp : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInOptions: GoogleSignInOptions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
 
-        binding.loginButton.setOnClickListener {
+        // Configure Google Sign In
+        googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("342707494946-alrvcdvl63ns0jc6hhrptec5n2np9n92.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        binding.signUpButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
             val username=  binding.nameEditText.text.toString()
-            val cpassword = binding.confirmpasswordEditText.text.toString()
-            if (email.isNotEmpty() && password.isNotEmpty()&& cpassword.isNotEmpty()&& username.isNotEmpty()) {
-                if(cpassword==password){
 
+            if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
                 auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this){task ->
-                        if(task.isSuccessful){
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            saveUserToDatabase(username, email)
                             showToast("User Created!.")
-                            startActivity(Intent(this,MainActivity::class.java))
+                            startActivity(Intent(this, QuestionsActivity::class.java))
                             finish()
-                        }
-                        else{
+                        } else {
                             showToast("Unable To Sign Up! Please Try Again Later!.")
                         }
                     }
-            }else{
-                showToast("Passwords Mismatch!.")
-            }
-            }else{
+            } else {
                 showToast("Email Or Password Cannot Be Empty!.")
             }
         }
 
-        binding.signup.setOnClickListener {
+        binding.google.setOnClickListener {
+            signInWithGoogle()
+        }
+
+        binding.Login.setOnClickListener {
             startActivity(Intent(this, Login::class.java))
             finish()
             this.overridePendingTransition(
@@ -64,67 +71,76 @@ class SignUp : BaseActivity() {
             } else {
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-            binding.confirmpasswordEditText.inputType = if (isChecked) {
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            } else {
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+    }
+
+    private fun signInWithGoogle() {
+        val signInIntent = GoogleSignIn.getClient(this, googleSignInOptions).signInIntent
+        startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if (account != null) {
+                    firebaseAuthWithGoogle(account.idToken!!)
+
+                }
+            } catch (e: ApiException) {
+                // Sign in failed
+                showToast("Google sign in failed.")
             }
         }
-
-        startWaveAnimation()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        startActivity(Intent(this, Login::class.java))
-        finish()
-        this.overridePendingTransition(
-            R.anim.animate_slide_in_left,
-            R.anim.animate_slide_out_right
-        )
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success
+                    val user = auth.currentUser
+                    // Update UI
+                    showToast("Google sign in success.")
+                    startActivity(Intent(this,MainActivity::class.java))
+                } else {
+                    // Sign in failed
+                    showToast("Google sign in failed.")
+                }
+            }
     }
 
-    private fun startWaveAnimation() {
-
-        val anim2 = createAnimation(binding.imageView2, 30f)
-        val anim3 = createAnimation(binding.imageView3, 60f)
-
-        val animatorSet = AnimatorSet()
-        animatorSet.play(anim2)
-        animatorSet.play(anim3)
-        animatorSet.duration = 2000
-        animatorSet.interpolator = LinearInterpolator()
-        animatorSet.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {
-                // Animation start
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                // Animation end
-                animatorSet.start()
-            }
-
-            override fun onAnimationCancel(animation: Animator) {
-                // Animation cancel
-            }
-
-            override fun onAnimationRepeat(animation: Animator) {
-                // Animation repeat
-            }
-        })
-
-        animatorSet.start()
+    private fun showToast(text: String) {
+        Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun createAnimation(view: View, translationY: Float): ObjectAnimator {
-        val animation = ObjectAnimator.ofFloat(view, "translationY", translationY)
-        animation.repeatCount = 1
-        animation.repeatMode = ObjectAnimator.REVERSE
-        return animation
+    fun saveUserToDatabase(username: String, email: String) {
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val userId = firebaseUser?.uid
+
+        if (userId != null) {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId)
+
+            val userData = HashMap<String, Any>()
+            userData["username"] = username
+            userData["email"] = email
+            userData["role"] = "Patient"
+            userData["phone"] = ""
+
+            databaseReference.setValue(userData)
+                .addOnSuccessListener {
+                    // Data successfully saved
+                }
+                .addOnFailureListener { e ->
+                    // Failed to save data
+                }
+        }
     }
 
-
-    private fun showToast(text: String){
-        Toast.makeText(baseContext,text,Toast.LENGTH_SHORT).show()
+    companion object {
+        private const val RC_GOOGLE_SIGN_IN = 9001
     }
 }

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "342707494946",
+    "firebase_url": "https://nafes-59aaa-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "nafes-59aaa",
     "storage_bucket": "nafes-59aaa.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.thekrimo.nafes"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "342707494946-alrvcdvl63ns0jc6hhrptec5n2np9n92.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCBDqMnSqMcf_pOs2-_j_tnjxL6NfvZKyE"
@@ -20,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342707494946-alrvcdvl63ns0jc6hhrptec5n2np9n92.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

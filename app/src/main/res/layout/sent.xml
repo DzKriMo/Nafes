@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="@font/abeezee"
+        android:layout_marginTop="6dp"
+        android:text="sent"
+        android:padding="10dp"
+
+        android:textColor="#FFFFFF"
+        android:id="@+id/sentmessage"
+        android:layout_marginStart="10dp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

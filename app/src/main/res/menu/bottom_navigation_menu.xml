@@ -11,20 +11,20 @@
         android:icon="@drawable/user"
         android:title="Profile" />
 
+
     <item
-        android:id="@+id/navigation_discover"
-        android:icon="@drawable/search"
-        android:title="Explore" />
+        android:id="@+id/navigation_community"
+        android:icon="@drawable/community"
+        android:title="Community" />
+
+
 
     <item
         android:id="@+id/navigation_Chat"
         android:icon="@drawable/contact"
         android:title="Chat" />
 
-    <item
-        android:id="@+id/navigation_Money"
-        android:icon="@drawable/dollar_symbol"
-        android:title="Payments" />
+
 
 
 </menu>

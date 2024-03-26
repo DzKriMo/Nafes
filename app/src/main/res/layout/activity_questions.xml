@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuestionsActivity"
+    android:background="#EEEEEE">
+
+    
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/img_10"
+        android:elevation="20dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/help"
+
+        android:layout_marginBottom="10dp"
+        android:id="@+id/back"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Help us match you with The right therapist."
+        android:textColor="#3F414E"
+        android:textSize="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:id="@+id/help"
+        android:paddingBottom="30dp"
+        />
+
+<ImageView
+    android:layout_width="95dp"
+    android:layout_height="200dp"
+    android:src="@drawable/img_7"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:elevation="-10dp"
+    android:layout_marginEnd="-5dp"
+    app:layout_constraintTop_toTopOf="parent"
+    />
+    <ImageView
+        android:layout_width="228dp"
+        android:layout_height="320dp"
+        android:src="@drawable/img_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="-20dp"
+        android:layout_marginEnd="-5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:fontFamily="@font/abeezee"
+        android:textColor="#3F414E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Question"
+        app:layout_constraintTop_toBottomOf="@id/help"
+        android:id="@+id/questionText"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/questionText"
+        app:layout_constraintBottom_toTopOf="@id/donthave"
+        android:layout_marginVertical="10dp"
+
+        android:id="@+id/scroll">
+
+
+        <LinearLayout
+            android:id="@+id/answersRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:layout_marginHorizontal="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/questionText" >
+
+        </LinearLayout>
+
+
+
+
+
+
+    </ScrollView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/question_bottom"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="25dp"
+        android:layout_marginHorizontal="20dp"
+        android:id="@+id/donthave"
+        app:layout_constraintWidth_percent="0.8"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Let’s walk through the process of finding the best therapist for you. we’ll start off with some basic questions"
+            android:textColor="#3F414E"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="16dp"
+            android:fontFamily="@font/abeezee"
+            android:textStyle="bold"
+            android:id="@+id/dont"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<ImageView
+    android:layout_width="105dp"
+    android:layout_height="105dp"
+    android:src="@drawable/img_9"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:elevation="-5dp"
+    android:layout_marginStart="-15dp"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

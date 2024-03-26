@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CalenderActivity"
+    android:background="#E0ECDE">
+
+    <ImageView
+        android:id="@+id/prevMonthButton"
+        android:layout_width="10dp"
+        android:layout_height="20dp"
+        android:src="@drawable/img_6"
+        app:layout_constraintEnd_toStartOf="@id/monthNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        android:layout_marginEnd="20dp"
+        android:layout_marginVertical="30dp"
+        />
+
+
+    <ImageView
+        android:id="@+id/nextMonthButton"
+        android:layout_width="10dp"
+        android:layout_height="20dp"
+        android:src="@drawable/img_5"
+
+        app:layout_constraintTop_toBottomOf="@id/back"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/monthNameTextView"
+        android:layout_marginVertical="30dp"/>
+    <TextView
+        android:id="@+id/monthNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="January 2024"
+        android:paddingBottom="50dp"
+        android:fontFamily="@font/abeezee"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        android:textColor="#393939"
+        android:layout_marginVertical="30dp"/>
+
+
+    <GridView
+        android:id="@+id/calendarGrid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:numColumns="7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/day_label_monday"
+        android:layout_marginHorizontal="10dp"
+        android:fontFamily="@font/abeezee"
+
+        />
+
+    <TextView
+        android:id="@+id/day_label_sunday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:text="Sun"
+        android:textColor="#073763"
+        android:fontFamily="@font/abeezee"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/calendarGrid"
+        app:layout_constraintEnd_toStartOf="@id/day_label_monday"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_monday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Mon"
+        android:textColor="#073763"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/day_label_sunday"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/day_label_tuesday"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_tuesday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Tue"
+        android:textColor="#393939"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/day_label_monday"
+        app:layout_constraintEnd_toStartOf="@id/day_label_wednesday"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_wednesday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:text="Wed"
+        android:textColor="#073763"
+        android:fontFamily="@font/abeezee"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/day_label_tuesday"
+        app:layout_constraintEnd_toStartOf="@id/day_label_thursday"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_thursday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Thu"
+        android:textColor="#073763"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/day_label_wednesday"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/day_label_friday"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_friday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Fri"
+        android:textColor="#FF0000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/day_label_thursday"
+        app:layout_constraintEnd_toStartOf="@id/day_label_saturday"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/day_label_saturday"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/abeezee"
+        android:text="Sat"
+        android:textColor="#FF0000"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/day_label_friday"
+        app:layout_constraintEnd_toEndOf="@id/calendarGrid"
+        app:layout_constraintTop_toBottomOf="@id/monthNameTextView"
+        android:gravity="center"/>
+
+
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/img_21"
+        android:elevation="20dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+
+        android:layout_marginTop="20dp"
+        android:id="@+id/back"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

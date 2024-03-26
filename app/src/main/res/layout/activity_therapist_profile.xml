@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TherapistProfile"
+    android:background="#f0f0f0">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/img_3"
+                android:id="@+id/backgroundImage"
+                android:background="#000000"
+                />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:cardCornerRadius="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/backgroundImage"
+                android:layout_marginTop="30dp"
+                app:cardElevation="5dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/backgroundImage"
+                >
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_23" />
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/img"
+                android:layout_marginTop="10dp"
+                android:text="Rab7"
+
+                android:fontFamily="@font/abeezee"
+                android:textColor="#2C6975"
+                app:layout_constraintStart_toStartOf="@id/img"
+
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:id="@+id/therapistName"
+
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Junior Therapist"
+                android:textColor="#A1A4B2"
+                android:textSize="20dp"
+                app:layout_constraintTop_toBottomOf="@id/therapistName"
+                app:layout_constraintStart_toStartOf="@id/therapistName"
+                android:layout_marginTop="10dp"
+                android:id="@+id/title"
+                android:fontFamily="@font/abeezee"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sidi Bel Abbes"
+                android:textColor="#2C6975"
+                android:textStyle="bold"
+                android:fontFamily="@font/abeezee"
+                android:textSize="20dp"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@id/therapistName"
+                android:id="@+id/location"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/bttnn"
+                android:text="Message"
+                android:paddingHorizontal="50dp"
+                android:fontFamily="@font/abeezee"
+                android:backgroundTint="#2C6975"
+                android:id="@+id/message"
+                app:layout_constraintStart_toStartOf="@id/location"
+                app:layout_constraintTop_toBottomOf="@id/location"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bttnn"
+                android:text="Schedule a session"
+                android:fontFamily="@font/abeezee"
+                android:textStyle="bold"
+                android:backgroundTint="#2C6975"
+                android:id="@+id/session"
+                app:layout_constraintStart_toEndOf="@id/message"
+                app:layout_constraintTop_toTopOf="@id/message"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginHorizontal="20dp"
+                />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/about"
+                app:layout_constraintTop_toBottomOf="@id/session"
+                android:layout_marginTop="20dp"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/aboutBox"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="About"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/about"
+                    android:fontFamily="@font/abeezee"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Rab7 a junior therapist, i was dealing with an interessting client that had severe autism despite that he is currently studying in ESI SBA. "
+                    android:textColor="#000000"
+                    android:textSize="15dp"
+                    app:layout_constraintTop_toBottomOf="@id/about"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/aboutText"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/abeezee"
+                    />
+
+
+
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/about"
+                app:layout_constraintTop_toBottomOf="@id/aboutBox"
+                android:layout_marginTop="20dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/educationBox"
+                android:fontFamily="@font/abeezee"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Education"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/education"
+                    android:fontFamily="@font/abeezee"
+                    />
+             <ListView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintTop_toBottomOf="@id/education"
+                 tools:listitem="@layout/education_item"
+                 />
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    app:layout_constraintStart_toStartOf="@id/education"
+                    android:src="@drawable/img"
+                    app:layout_constraintTop_toBottomOf="@id/education"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/uni"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="University el Hadj Lakhdhar, Batna"
+                    android:textColor="#000000"
+                    android:textSize="15dp"
+                    app:layout_constraintTop_toTopOf="@id/uni"
+                    app:layout_constraintStart_toEndOf="@id/uni"
+                    app:layout_constraintBottom_toBottomOf="@id/uni"
+                    android:layout_marginStart="10dp"
+                    android:id="@+id/educationText"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/abeezee"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/about"
+                app:layout_constraintTop_toBottomOf="@id/educationBox"
+                android:layout_marginTop="20dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/CertificatsBox"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Certificates"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/abeezee"
+                    android:textSize="18dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/certificates"
+                    />
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/certificates"
+                    tools:listitem="@layout/education_item"
+                    android:id="@+id/certificatesList"
+                    />
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    app:layout_constraintStart_toStartOf="@id/certificates"
+                    android:src="@drawable/img"
+                    app:layout_constraintTop_toBottomOf="@id/certificatesList"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/certuni"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Masters in Counseling Psychology"
+                    android:textColor="#000000"
+                    android:textSize="15dp"
+                    android:fontFamily="@font/abeezee"
+                    app:layout_constraintTop_toTopOf="@id/certuni"
+                    app:layout_constraintStart_toEndOf="@id/certuni"
+                    app:layout_constraintBottom_toBottomOf="@id/certuni"
+                    android:layout_marginStart="10dp"
+                    android:id="@+id/certificateText"
+                    android:layout_marginTop="5dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/about"
+                app:layout_constraintTop_toBottomOf="@id/CertificatsBox"
+                android:layout_marginTop="20dp"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="10dp"
+                android:id="@+id/langBox"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Languages"
+                    android:fontFamily="@font/abeezee"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="18dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/languages"
+                    />
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/languages"
+                    tools:listitem="@layout/lang_item"
+                    android:id="@+id/langList"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/languages"
+                    android:text="English"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="@font/abeezee"
+                    android:textSize="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/langList"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/langName"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Full professional proficiency"
+                    android:textColor="#2C6975"
+                    android:textSize="15dp"
+                    android:fontFamily="@font/abeezee"
+
+                    app:layout_constraintStart_toEndOf="@id/langName"
+                    app:layout_constraintTop_toBottomOf="@id/langName"
+                    android:layout_marginStart="-10dp"
+                    app:layout_goneMarginTop="20dp"
+                    android:id="@+id/langText"
+                    android:layout_marginTop="5dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

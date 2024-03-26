@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:textSize="25dp"
-        android:fontFamily="@font/louisgeorgecafe"
+        android:fontFamily="@font/abeezee"
         android:textColor="@color/black"
         android:text="Question" />
 
