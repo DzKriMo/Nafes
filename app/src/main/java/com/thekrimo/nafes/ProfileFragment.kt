@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +27,13 @@ import com.google.firebase.database.ValueEventListener
 import com.thekrimo.nafes.databinding.FragmentProfileBinding
 import java.util.Calendar
 import java.util.GregorianCalendar
-
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     lateinit var userName: String
     lateinit var userEmail: String
+    lateinit var userPhone: String
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
 
@@ -47,15 +50,20 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchUserName()
-        val (name, email) = loadLocally()
+        val name = loadLocally()[0]
+        val email = loadLocally()[1]
+        val phone = loadLocally()[2]
         userEmail = email
-
-
         userName = name
-       // val userName = arguments?.getString("userName")
+        userPhone = phone
 
-      //  val userEmail = arguments?.getString("userEmail")
+        binding.name.text = userName
+        binding.emailEditText.hint = userEmail
+        binding.nameEditText.hint = userName
+        if (userPhone!="")binding.phoneEditText.hint = userPhone
+        saveLocally(userName,userEmail,userPhone)
+        fetchUserName()
+
 
 
 
@@ -69,6 +77,7 @@ class ProfileFragment : Fragment() {
                 ).show()
                 startActivity(Intent(requireActivity(), GetStarted::class.java))
             }
+            clearSharedPreferences()
         }
 
         binding.editPassword.setOnClickListener {
@@ -87,6 +96,41 @@ class ProfileFragment : Fragment() {
 
 
 
+        binding.editPhone.setOnClickListener {
+            binding.phoneEditText.hint = "Type Your New Phone Number"
+            binding.phoneEditText.inputType = InputType.TYPE_CLASS_PHONE
+
+        }
+        binding.phoneEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+              EditPhone(binding.phoneEditText.text.toString())
+                binding.phoneEditText.hint = binding.phoneEditText.text.toString()
+                binding.phoneEditText.inputType = InputType.TYPE_NULL
+
+                true // Return true to indicate that the action has been handled
+            } else {
+                false // Return false if the action is not handled
+            }
+        }
+
+
+        binding.editName.setOnClickListener {
+            binding.nameEditText.hint = "Type Your Name"
+            binding.nameEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+        }
+        binding.nameEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                EditName(binding.nameEditText.text.toString())
+                binding.nameEditText.hint = binding.phoneEditText.text.toString()
+                binding.nameEditText.inputType = InputType.TYPE_NULL
+
+                true // Return true to indicate that the action has been handled
+            } else {
+                false // Return false if the action is not handled
+            }
+        }
+
     }
 
     override fun onDestroyView() {
@@ -94,7 +138,24 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
+private fun EditPhone(Phone:String){
+    val firebaseUser = FirebaseAuth.getInstance().currentUser
+    val uid = firebaseUser?.uid
+    if(uid!=null){
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("phone")
+        databaseReference.setValue(Phone)
+    }
+}
 
+
+    private fun EditName(Name:String){
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val uid = firebaseUser?.uid
+        if(uid!=null){
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("username")
+            databaseReference.setValue(Name)
+        }
+    }
     private fun fetchUserName(){
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val userId = firebaseUser?.uid
@@ -107,13 +168,14 @@ class ProfileFragment : Fragment() {
                     if (snapshot.exists()) {
                         userName = snapshot.child("username").getValue(String::class.java) ?: ""
                         userEmail = snapshot.child("email").getValue(String::class.java) ?: ""
+                        userPhone = snapshot.child("phone").getValue(String::class.java) ?: ""
 
-
-                        binding.name.text = userName
+                        if (userPhone!="")binding.phoneEditText.hint = userPhone
+                        saveLocally(userName,userEmail,userPhone)
+                       binding.name.text = userName
                         binding.emailEditText.hint = userEmail
                         binding.nameEditText.hint = userName
 
-                        saveLocally(userName,userEmail)
 
                     }
                 }
@@ -132,21 +194,28 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun saveLocally(name: String, email: String) {
+    private fun saveLocally(name: String, email: String,phone: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("username", name)
         editor.putString("email", email)
+        editor.putString("phone", phone)
         editor.apply()
     }
 
+    private fun clearSharedPreferences() {
+        val sharedPreferences = requireActivity().getSharedPreferences("user_data", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
 
-
-    private fun loadLocally(): Pair<String, String> {
-        val sharedPreferences = requireActivity().getSharedPreferences("username", Context.MODE_PRIVATE)
+    private fun loadLocally(): List<String> {
+        val sharedPreferences = requireActivity().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val username = sharedPreferences.getString("username", "") ?: ""
         val useremail = sharedPreferences.getString("email", "") ?: ""
-        return Pair(username, useremail)
+        val userphone = sharedPreferences.getString("phone", "") ?: ""
+        return listOf(username,useremail,userphone)
     }
 
     private fun createNotificationChannel() {

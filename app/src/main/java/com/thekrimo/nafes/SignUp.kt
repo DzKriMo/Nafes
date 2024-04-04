@@ -129,6 +129,8 @@ class SignUp : BaseActivity() {
             userData["email"] = email
             userData["role"] = "Patient"
             userData["phone"] = ""
+            userData["therapistID"] = ""
+            userData["therapistName"] = ""
 
             databaseReference.setValue(userData)
                 .addOnSuccessListener {

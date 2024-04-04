@@ -41,6 +41,9 @@ class CalenderActivity : BaseActivity() {
         binding.nextMonthButton.setOnClickListener {
             updateMonth(1)
         }
+        binding.back.setOnClickListener {
+            onBackPressed()
+        }
 
         updateMonthName(currentMonth, currentYear)
 

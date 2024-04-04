@@ -89,10 +89,12 @@
             android:id="@+id/emailEditText"
             android:hint="Email"
             android:editable="false"
+            android:textColor="#ABABAB"
+            android:imeOptions="actionDone"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="50dp"
             android:background="@drawable/email"
-            />
+             />
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
@@ -125,8 +127,10 @@
             android:textColorHint="#ABABAB"
             app:layout_constraintTop_toBottomOf="@id/phone"
             android:id="@+id/phoneEditText"
+            android:imeOptions="actionDone"
             android:hint="Phone Number"
             android:fontFamily="@font/abeezee"
+            android:textColor="#ABABAB"
             android:editable="false"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="50dp"
@@ -162,10 +166,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColorHint="#ABABAB"
+            android:textColor="#ABABAB"
             android:fontFamily="@font/abeezee"
             app:layout_constraintTop_toBottomOf="@id/fullname"
             android:id="@+id/nameEditText"
-            android:hint="Phone Number"
+            android:imeOptions="actionDone"
+            android:hint="Name"
+
             android:editable="false"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="50dp"
@@ -207,9 +214,12 @@
             app:layout_constraintTop_toBottomOf="@id/pass"
             android:id="@+id/passwordEditText"
             android:hint="Password"
+
             android:editable="false"
             android:fontFamily="@font/abeezee"
             android:layout_marginHorizontal="10dp"
+            android:imeOptions="actionDone"
+            android:textColor="#ABABAB"
             android:paddingHorizontal="50dp"
             android:background="@drawable/password"
             />

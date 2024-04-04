@@ -1,5 +1,171 @@
 <resources>
-    <string name="app_name">نفس Nafes</string>
+    <string name="app_name">نَفَس Nafas</string>
     <string name="login">Login</string>
+
+
+
+
+
+
+
+
+
+
+    <string-array name="age_array">
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+    </string-array>
+
+
+
+
+
+
+    <string-array name="state_array">
+        <item>1. Adrar</item>
+        <item>2. Chlef</item>
+        <item>3. Laghouat</item>
+        <item>4. Oum El Bouaghi</item>
+        <item>5. Batna</item>
+        <item>6. Béjaïa</item>
+        <item>7. Biskra</item>
+        <item>8. Béchar</item>
+        <item>9. Blida</item>
+        <item>10. Bouira</item>
+        <item>11. Tamanrasset</item>
+        <item>12. Tébessa</item>
+        <item>13. Tlemcen</item>
+        <item>14. Tiaret</item>
+        <item>15. Tizi Ouzou</item>
+        <item>16. Alger</item>
+        <item>17. Djelfa</item>
+        <item>18. Jijel</item>
+        <item>19. Sétif</item>
+        <item>20. Saïda</item>
+        <item>21. Skikda</item>
+        <item>22. Sidi Bel Abbès</item>
+        <item>23. Annaba</item>
+        <item>24. Guelma</item>
+        <item>25. Constantine</item>
+        <item>26. Médéa</item>
+        <item>27. Mostaganem</item>
+        <item>28. Msila</item>
+        <item>29. Mascara</item>
+        <item>30. Ouargla</item>
+        <item>31. Oran</item>
+        <item>32. El Bayadh</item>
+        <item>33. Illizi</item>
+        <item>34. Bordj Bou Arréridj</item>
+        <item>35. Boumerdès</item>
+        <item>36. El Tarf</item>
+        <item>37. Tindouf</item>
+        <item>38. Tissemsilt</item>
+        <item>39. El Oued</item>
+        <item>40. Khenchela</item>
+        <item>41. Souk Ahras</item>
+        <item>42. Tipaza</item>
+        <item>43. Mila</item>
+        <item>44. Aïn Defla</item>
+        <item>45. Naâma</item>
+        <item>46. Aïn Témouchent</item>
+        <item>47. Ghardaïa</item>
+        <item>48. Relizane</item>
+        <item>49. Timimoun</item>
+        <item>50. Bordj Baji Mokhtar</item>
+        <item>51. Ouled Djellal</item>
+        <item>52. Beni Abbes</item>
+        <item>53. In Salah</item>
+        <item>54. In Guezzam</item>
+        <item>55. Touggourt</item>
+        <item>56. Djanet</item>
+        <item>57. El Mghair</item>
+        <item>58. El Menia</item>
+    </string-array>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </resources>

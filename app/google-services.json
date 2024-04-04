@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "342707494946",
-    "firebase_url": "https://nafes-59aaa-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "nafes-59aaa",
-    "storage_bucket": "nafes-59aaa.appspot.com"
+    "project_number": "103094928908",
+    "firebase_url": "https://nafas-therapy-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "nafas-therapy",
+    "storage_bucket": "nafas-therapy.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:342707494946:android:3a678405293e96b7f2aa7b",
+        "mobilesdk_app_id": "1:103094928908:android:7e486631d2ff9340ef1029",
         "android_client_info": {
           "package_name": "com.thekrimo.nafes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "342707494946-alrvcdvl63ns0jc6hhrptec5n2np9n92.apps.googleusercontent.com",
+          "client_id": "103094928908-ho5o1u203nvclhs9bk675hb1m3dv2p0q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCBDqMnSqMcf_pOs2-_j_tnjxL6NfvZKyE"
+          "current_key": "AIzaSyC4Irxqy5NW_zMvpjhQg9B_UR2C-ela4g0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "342707494946-alrvcdvl63ns0jc6hhrptec5n2np9n92.apps.googleusercontent.com",
+              "client_id": "103094928908-ho5o1u203nvclhs9bk675hb1m3dv2p0q.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

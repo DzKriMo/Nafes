@@ -57,7 +57,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
     implementation ("androidx.browser:browser:1.4.0")
-
+    implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.google.firebase:firebase-firestore")
+
+
 
 }
