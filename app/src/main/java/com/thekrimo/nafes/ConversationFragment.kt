@@ -62,6 +62,7 @@ class ConversationFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -144,8 +145,10 @@ class ConversationFragment : Fragment() {
         audioFile = createAudioFile()
         audioRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4) // Use MPEG-4 format
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)    // Use AAC encoder for better quality
+            setAudioEncodingBitRate(128000)                   // Set bitrate (adjust as needed)
+            setAudioSamplingRate(44100)                        // Set sampling rate (adjust as needed)
             setOutputFile(audioFile.absolutePath)
             try {
                 prepare()
@@ -157,6 +160,8 @@ class ConversationFragment : Fragment() {
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun stopRecording() {
         if (!isRecording) return
         binding.record.animate().scaleX(1.0f).scaleY(1.0f).start()
@@ -174,9 +179,10 @@ class ConversationFragment : Fragment() {
     private fun createAudioFile(): File {
         val audioFileName = "audio_${System.currentTimeMillis()}.3gp"
         val storageDir = requireContext().getExternalFilesDir(null)
-        return File.createTempFile(audioFileName, ".3gp", storageDir)
+        return File.createTempFile(audioFileName, ".mp3", storageDir)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadAudio(audioUri: Uri) {
         val fileName = getFileNameFromUri(audioUri)
         val fileRef = storageRef.child("audio/${System.currentTimeMillis()}_${audioUri.lastPathSegment}")
