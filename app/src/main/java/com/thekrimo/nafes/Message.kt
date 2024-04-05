@@ -5,5 +5,6 @@ data class Message(
     val receiverId: String = "",
     val message: String = "",
     val messageLink: String = "",
-    val audioUrl: String = ""
+    val audioUrl: String = "",
+    val timestamp: String =""
 )

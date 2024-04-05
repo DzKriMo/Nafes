@@ -233,7 +233,7 @@ class ConversationFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentTimestamp(): String {
         val currentDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         return currentDateTime.format(formatter)
     }
     private fun requestCameraAndAudioPermissions() {
@@ -357,11 +357,12 @@ class ConversationFragment : Fragment() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun sendMessage(messageText: String) {
         val messageId = chatsRef.child(currentUserUid).child(TherapistId).push().key
-
+        val timestamp = getCurrentTimestamp()
         if (messageId != null) {
-            val message = Message(currentUserUid, TherapistId, messageText)
+            val message = Message(currentUserUid, TherapistId, messageText,"","",timestamp)
             chatsRef.child(currentUserUid).child(TherapistId).child(messageId).setValue(message)
             chatsRef.child(TherapistId).child(currentUserUid).child(messageId).setValue(message)
 
