@@ -1,8 +1,6 @@
 package com.thekrimo.nafes
 
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,9 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -103,7 +98,7 @@ class ProfileFragment : Fragment() {
         }
         binding.phoneEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-              EditPhone(binding.phoneEditText.text.toString())
+                EditPhone(binding.phoneEditText.text.toString())
                 binding.phoneEditText.hint = binding.phoneEditText.text.toString()
                 binding.phoneEditText.inputType = InputType.TYPE_NULL
 
@@ -138,14 +133,14 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
-private fun EditPhone(Phone:String){
-    val firebaseUser = FirebaseAuth.getInstance().currentUser
-    val uid = firebaseUser?.uid
-    if(uid!=null){
-        val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("phone")
-        databaseReference.setValue(Phone)
+    private fun EditPhone(Phone:String){
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val uid = firebaseUser?.uid
+        if(uid!=null){
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("phone")
+            databaseReference.setValue(Phone)
+        }
     }
-}
 
 
     private fun EditName(Name:String){
@@ -172,7 +167,7 @@ private fun EditPhone(Phone:String){
 
                         if (userPhone!="")binding.phoneEditText.hint = userPhone
                         saveLocally(userName,userEmail,userPhone)
-                       binding.name.text = userName
+                        binding.name.text = userName
                         binding.emailEditText.hint = userEmail
                         binding.nameEditText.hint = userName
 
@@ -218,35 +213,8 @@ private fun EditPhone(Phone:String){
         return listOf(username,useremail,userphone)
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "appointment_channel"
-            val channelName = "Appointment Reminder"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = "Reminder for today's appointment"
-            }
 
-            val notificationManager: NotificationManager =
-                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun sendNotification(context: Context, contentText: String) {
-        val notificationManager = NotificationManagerCompat.from(context)
-
-        val notification = NotificationCompat.Builder(context, "appointment_channel")
-            .setSmallIcon(R.drawable.logo)
-            .setContentTitle("Appointment Reminder")
-            .setContentText(contentText)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-
-        notificationManager.notify(0, notification)
-    }
 
     fun openLink(link: String){
         val intent = Intent(Intent.ACTION_VIEW)

@@ -12,7 +12,7 @@ android {
         applicationId = "com.thekrimo.nafes"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -59,6 +59,8 @@ dependencies {
     implementation ("androidx.browser:browser:1.4.0")
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-messaging")
+    implementation ("com.google.code.gson:gson:2.8.8")
 
 
 

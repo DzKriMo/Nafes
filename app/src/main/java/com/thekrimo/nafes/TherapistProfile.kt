@@ -12,5 +12,7 @@ class TherapistProfile : BaseActivity() {
         setContentView(binding.root)
 
         binding.session.setOnClickListener { startActivity(Intent(this,CalenderActivity::class.java)) }
+
+
     }
 }

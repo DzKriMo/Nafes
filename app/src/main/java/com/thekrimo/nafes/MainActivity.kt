@@ -1,16 +1,14 @@
 package com.thekrimo.nafes
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
+
+
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +24,9 @@ class MainActivity : BaseActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var userName: String
     lateinit var userEmail: String
+    private var currentFragmentTag: String? = null
     private lateinit var bottomNavigation: BottomNavigationView
+    private val menuItems = arrayOf("HomeFragment", "ProfileFragment", "CommunityFragment", "ConversationFragment")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,7 +46,6 @@ class MainActivity : BaseActivity() {
             return
         }
 
-        createNotificationChannel()
 
 
 
@@ -57,33 +56,30 @@ class MainActivity : BaseActivity() {
 
 
        bottomNavigation = binding.bottomNavigation
-
+        replaceFragment(HomeFragment(), "HomeFragment") // Set the initial fragment with its tag
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
-            when(menuItem.itemId){
-                R.id.navigation_home ->{
-                    replaceFragment(HomeFragment())
+            when (menuItem.itemId) {
+                R.id.navigation_home -> {
+                    delaySwitchFragment(HomeFragment(), "HomeFragment")
                     true
                 }
-                R.id.navigation_profile ->{
-                    val bundle = Bundle().apply {
-                        putString("userName", userName)
-                        putString("userEmail", userEmail)
-                    }
-                    replaceFragment(ProfileFragment())
+                R.id.navigation_profile -> {
+                    delaySwitchFragment(ProfileFragment(), "ProfileFragment")
                     true
                 }
-                R.id.navigation_community ->{
-                    replaceFragment(CommunityFragment())
+                R.id.navigation_community -> {
+                    delaySwitchFragment(CommunityFragment(), "CommunityFragment")
                     true
                 }
-                R.id.navigation_Chat ->{
-                    replaceFragment(ConversationFragment())
+                R.id.navigation_Chat -> {
+                    delaySwitchFragment(ConversationFragment(), "ConversationFragment")
                     true
                 }
                 else -> false
             }
         }
-        replaceFragment(HomeFragment())
+
+
 
 
 
@@ -99,34 +95,9 @@ class MainActivity : BaseActivity() {
 
 
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "appointment_channel"
-            val channelName = "Appointment Reminder"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = "Reminder for today's appointment"
-            }
 
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
 
-    @SuppressLint("MissingPermission")
-    private fun sendNotification(context: Context, contentText: String) {
-        val notificationManager = NotificationManagerCompat.from(context)
 
-        val notification = NotificationCompat.Builder(context, "appointment_channel")
-            .setSmallIcon(R.drawable.logo)
-            .setContentTitle("Appointment Reminder")
-            .setContentText(contentText)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-
-        notificationManager.notify(0, notification)
-    }
 
 
     private fun fetchUserName(){
@@ -156,8 +127,15 @@ class MainActivity : BaseActivity() {
 
 
     }
+    private fun getIndexForFragment(fragmentTag: String): Int {
+        return menuItems.indexOf(fragmentTag)
+    }
 
+    private fun delaySwitchFragment(fragment: Fragment, tag: String, args: Bundle? = null) {
 
+            replaceFragment(fragment, tag)
+
+    }
     private fun saveLocally(name: String,email:String) {
         val sharedPreferences = getSharedPreferences("username", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -179,13 +157,30 @@ class MainActivity : BaseActivity() {
 
 
 
-    private fun replaceFragment(fragment: Fragment, args: Bundle? = null) {
-        fragment.arguments = args
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
-    }
+    private fun replaceFragment(fragment: Fragment, tag: String, args: Bundle? = null) {
 
+
+        if (currentFragmentTag != tag) {
+            val currentIndex = getIndexForFragment(currentFragmentTag ?: "")
+            val targetIndex = getIndexForFragment(tag)
+
+            val directionTransition = if (currentIndex < targetIndex) {
+                Pair(R.anim.animate_slide_left_enter, R.anim.animate_slide_left_exit)
+            } else {
+                Pair(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right)
+            }
+
+
+            val (enterAnim, exitAnim) = directionTransition
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(enterAnim, exitAnim)
+                .replace(R.id.fragment_container, fragment, tag)
+                .commit()
+
+            currentFragmentTag = tag
+            Log.d("fragment replaced!!", "replaceFragment: ")
+        }
+    }
     override fun onBackPressed() {
         val conversationFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (conversationFragment is ConversationFragment && conversationFragment.isVisible &&conversationFragment.isWebVisible()) {

@@ -205,7 +205,7 @@ class ConversationAdapter(
         val fileExtension = MimeTypeMap.getFileExtensionFromUrl(link)
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
-        if (mimeType != null && imageExtensions.any { mimeType.contains(it) }) {
+        if ((mimeType != null && imageExtensions.any { mimeType.contains(it) }) || link.contains("IMG")|| link.contains("img")|| link.contains("jpg")|| link.contains("jpeg")|| link.contains("png")|| link.contains("gif")|| link.contains("svg")) {
             val imageView = ImageView(context)
             Picasso.get().load(link).into(imageView)
 

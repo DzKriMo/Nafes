@@ -12,7 +12,7 @@
 <ImageView
     android:layout_width="match_parent"
     android:layout_height="515dp"
-    android:src="@drawable/img_11"
+    android:src="@drawable/getstarted"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nafes"
+        android:text="Nafas"
         android:textColor="#3F414E"
         android:textSize="20dp"
         android:fontFamily="@font/abeezee"
