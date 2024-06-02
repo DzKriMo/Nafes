@@ -11,7 +11,3 @@ data class Question(
     val questionText: String,
     val answers: List<Answer>
 )
-data class Response(
-    val question: String,
-    val answer: String
-)

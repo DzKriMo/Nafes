@@ -9,18 +9,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.media.audiofx.Visualizer
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
@@ -41,7 +41,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 
+@Suppress("DEPRECATION")
 class ConversationFragment : Fragment() {
     private lateinit var binding: FragmentConversationBinding
     private lateinit var receivedMessagesAdapter: ConversationAdapter
@@ -50,26 +54,27 @@ class ConversationFragment : Fragment() {
     private lateinit var therapistName: String
     private lateinit var chatsRef: DatabaseReference
     private lateinit var storageRef: StorageReference
+    private lateinit var visualizer: Visualizer
+    private lateinit var visualizerContainer: FrameLayout
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var audioRecorder: MediaRecorder
+    private  var audioRecorder=  MediaRecorder()
     private lateinit var audioFile: File
-    private lateinit var audioUri: Uri
     private var isRecording = false
     private var gson = Gson()
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     private val RECORD_AUDIO_PERMISSION_REQUEST_CODE = 101
     private val PICK_FILE_REQUEST_CODE = 102
-    private val RECORD_AUDIO_REQUEST_CODE = 103
     private val already = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentConversationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,7 +88,10 @@ class ConversationFragment : Fragment() {
             binding.contact.text = therapistData[0]
             therapistId = therapistData[1]
         }
-        fetchTherapist()
+        CoroutineScope(Dispatchers.IO).launch {   fetchTherapist()}
+
+
+
 
         receivedMessagesAdapter = ConversationAdapter(requireContext(), currentUserUid, binding.recyclerViewReceivedMessages)
 
@@ -91,6 +99,7 @@ class ConversationFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = receivedMessagesAdapter
         }
+        binding.pfp.setOnClickListener { startActivity(Intent(requireContext(),TherapistProfile::class.java)) }
 
         chatsRef = FirebaseDatabase.getInstance().getReference("Chats")
 
@@ -105,29 +114,37 @@ class ConversationFragment : Fragment() {
         }
 
         binding.startVideo.setOnClickListener {
-            binding.web.visibility = View.VISIBLE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestCameraAndAudioPermissions()
-            }
-            openCustomTab("https://nafas-therapy.web.app/patient.html")
+
+            CoroutineScope(Dispatchers.IO).launch {   requestCameraAndAudioPermissions() }
+          openCustomTab("https://nafas-therapy.web.app/patient.html")
+            //startActivity(Intent(requireActivity(), VideoChatActivity::class.java))
         }
 
         binding.clip.setOnClickListener {
             openFileChooser()
         }
 
-        binding.record.setOnTouchListener { view, motionEvent ->
+        binding.record.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
+
                 MotionEvent.ACTION_DOWN -> {
+
                     startRecording()
+
                 }
                 MotionEvent.ACTION_UP -> {
+
                     stopRecording()
+                }
+                else ->{
+                    Log.d("suka", "onViewCreated: ")
+
                 }
             }
             true
         }
     }
+
 
     private fun openFileChooser() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -136,44 +153,44 @@ class ConversationFragment : Fragment() {
     }
 
     private fun saveMessageLocally(messageId: String, message: Message) {
-        val sharedPreferences = requireActivity().getSharedPreferences("local_messages", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val messageJson = gson.toJson(message)
-        editor.putString(messageId, messageJson)
-        editor.apply()
+        val activity = activity
+        if (activity != null && isAdded) {
+            val sharedPreferences = activity.getSharedPreferences("local_messages", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            val messageJson = gson.toJson(message)
+            editor.putString(messageId, messageJson)
+            editor.apply()
+        } else {
+            Log.e(TAG, "Fragment not attached to an activity")
+        }
     }
-
-    private fun getSeenMessageIds(): Set<String> {
-        val sharedPreferences = requireActivity().getSharedPreferences("local_messages", Context.MODE_PRIVATE)
-        return sharedPreferences.all.keys
-    }
-
 
 
     private fun listenForReceivedMessages() {
+
         val sharedPreferences = requireActivity().getSharedPreferences("local_messages", Context.MODE_PRIVATE)
         val localMessagesMap = sharedPreferences.all
         if (!isNetworkConnected()) {
-        // Load and display local messages first if there are any
+            // Load and display local messages first if there are any
             already.clear()
-        for ((messageId, messageJson) in localMessagesMap) {
-            try {
-                if (messageJson is String) {
-                    Log.d(TAG, "Processing local message JSON: $messageJson")
-                    val message = gson.fromJson(messageJson, Message::class.java)
-                    receivedMessagesAdapter.addMessage(message)
-                    already.add(messageId)
-                    binding.recyclerViewReceivedMessages.scrollToPosition(receivedMessagesAdapter.getLastItemPosition())
-                } else {
-                    Log.e(TAG, "Invalid message format: $messageJson")
+            for ((messageId, messageJson) in localMessagesMap) {
+                try {
+                    if (messageJson is String) {
+                        Log.d(TAG, "Processing local message JSON: $messageJson")
+                        val message = gson.fromJson(messageJson, Message::class.java)
+                        receivedMessagesAdapter.addMessage(message)
+                        already.add(messageId)
+                        binding.recyclerViewReceivedMessages.scrollToPosition(receivedMessagesAdapter.getLastItemPosition())
+                    } else {
+                        Log.e(TAG, "Invalid message format: $messageJson")
+                    }
+                } catch (e: JsonSyntaxException) {
+                    Log.e(TAG, "Error parsing local message JSON: $e")
                 }
-            } catch (e: JsonSyntaxException) {
-                Log.e(TAG, "Error parsing local message JSON: $e")
             }
         }
-        }
-        // Ch}eck for internet connectivity before adding Firebase listener
-        else{
+        // Check for internet connectivity before adding Firebase listener
+        else {
             val receivedMessagesRef = chatsRef.child(currentUserUid).child(therapistId)
             receivedMessagesRef.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -181,9 +198,9 @@ class ConversationFragment : Fragment() {
                         val message = snapshot.getValue(Message::class.java)
                         message?.let {
 
-                                receivedMessagesAdapter.addMessage(it)
-                                saveMessageLocally(snapshot.key ?: "", message) // Save as JSON string
-                                binding.recyclerViewReceivedMessages.scrollToPosition(receivedMessagesAdapter.getLastItemPosition())
+                            receivedMessagesAdapter.addMessage(it)
+                            saveMessageLocally(snapshot.key ?: "", message) // Save as JSON string
+                            binding.recyclerViewReceivedMessages.scrollToPosition(receivedMessagesAdapter.getLastItemPosition())
 
                         }
                     } catch (e: DatabaseException) {
@@ -202,6 +219,7 @@ class ConversationFragment : Fragment() {
         }
     }
 
+
     // Helper function to check internet connectivity
     private fun isNetworkConnected(): Boolean {
         val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -209,14 +227,8 @@ class ConversationFragment : Fragment() {
         return networkInfo != null && networkInfo.isConnected
     }
 
-
-    private fun loadLocalMessages(): Set<String> {
-        val sharedPreferences = requireActivity().getSharedPreferences("local_messages", Context.MODE_PRIVATE)
-        return sharedPreferences.all.keys
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    private  fun sendMessage(messageText: String) {
+    private fun sendMessage(messageText: String) {
         val messageId = chatsRef.child(currentUserUid).child(therapistId).push().key
         val timestamp = getCurrentTimestamp()
         if (messageId != null) {
@@ -249,7 +261,8 @@ class ConversationFragment : Fragment() {
             })
     }
 
-    private fun fetchTherapist() {
+    private suspend fun fetchTherapist() {
+        if (!isAdded) return
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val userId = firebaseUser?.uid
 
@@ -258,35 +271,38 @@ class ConversationFragment : Fragment() {
 
             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!isAdded) return
                     if (snapshot.exists()) {
                         therapistName = snapshot.child("therapistName").getValue(String::class.java) ?: ""
                         therapistId = snapshot.child("therapistID").getValue(String::class.java) ?: ""
                         binding.contact.text = therapistName
-                        saveLocaly(therapistName, therapistId)
+                        saveLocally(therapistName, therapistId)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Handle error if data retrieval fails Kash nhar
+                    // Handle error if data retrieval fails
                 }
-
             })
         }
     }
 
-    private fun saveLocaly(name: String, Id: String) {
+
+
+
+    private fun saveLocally(name: String, id: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("therapist_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("therapist", name)
-        editor.putString("id", Id)
+        editor.putString("id", id)
         editor.apply()
     }
 
     private fun loadLocally(): List<String> {
         val sharedPreferences = requireActivity().getSharedPreferences("therapist_data", Context.MODE_PRIVATE)
         val name = sharedPreferences.getString("therapist", "") ?: ""
-        val ID = sharedPreferences.getString("id", "") ?: ""
-        return listOf(name, ID)
+        val id = sharedPreferences.getString("id", "") ?: ""
+        return listOf(name, id)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -296,34 +312,37 @@ class ConversationFragment : Fragment() {
         return currentDateTime.format(formatter)
     }
 
-    private fun requestCameraAndAudioPermissions() {
-        val cameraPermission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        )
-        val recordAudioPermission = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.RECORD_AUDIO
-        )
-
-        val permissionsToRequest = ArrayList<String>()
-
-        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            permissionsToRequest.add(Manifest.permission.CAMERA)
-        }
-        if (recordAudioPermission != PackageManager.PERMISSION_GRANTED) {
-            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                permissionsToRequest.toTypedArray(),
-                CAMERA_PERMISSION_REQUEST_CODE
+    private suspend fun requestCameraAndAudioPermissions() {
+        withContext(Dispatchers.IO) {
+            val cameraPermission = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
             )
+            val recordAudioPermission = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.RECORD_AUDIO
+            )
+
+            val permissionsToRequest = ArrayList<String>()
+
+            if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.CAMERA)
+            }
+            if (recordAudioPermission != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
+            }
+
+            if (permissionsToRequest.isNotEmpty()) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    permissionsToRequest.toTypedArray(),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            }
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -332,58 +351,74 @@ class ConversationFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE || requestCode == RECORD_AUDIO_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                // Permissions granted, handle accordingly
+                Log.d("permission", "you have permission nigga")
             } else {
-                // Permissions denied, handle accordingly
+                Log.d("permission", "no permission for you nigga")
             }
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val selectedFileUri = data.data
             if (selectedFileUri != null) {
-                uploadFile(selectedFileUri)
+                CoroutineScope(Dispatchers.IO).launch { uploadFile(selectedFileUri) }
             }
         }
     }
 
-    private fun uploadFile(fileUri: Uri) {
-        val fileName = getFileNameFromUri(fileUri)
-        val fileRef = storageRef.child("files/${System.currentTimeMillis()}_${fileUri.lastPathSegment}")
+    private suspend fun uploadFile(fileUri: Uri) {
+        withContext(Dispatchers.IO) {
+            val fileName = getFileNameFromUri(fileUri)
+            val fileExtension = getFileExtension(fileName)
+            val storageFileName = "${System.currentTimeMillis()}_${fileUri.lastPathSegment}.$fileExtension"
+            val fileRef = storageRef.child("files/$storageFileName")
 
-        try {
-            val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
-            inputStream?.let {
-                fileRef.putStream(it)
-                    .addOnSuccessListener { taskSnapshot ->
-                        // :) hadi zrda 5 5, get the download URL
-                        fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                            val fileUrl = downloadUri.toString()
-                            saveFileUrlToDatabase(fileUrl, fileName)
+            try {
+                val inputStream = requireActivity().contentResolver.openInputStream(fileUri)
+                inputStream?.let {
+                    fileRef.putStream(it)
+                        .addOnSuccessListener { _ ->
+                            // :) hadi zrda 5 5 Get the download URL
+                            fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                                val fileUrl = downloadUri.toString()
+                                CoroutineScope(Dispatchers.IO).launch { saveFileUrlToDatabase(fileUrl, fileName) }
+                            }
                         }
-                    }
-                    .addOnFailureListener { exception ->
-                        // Handle any errors kash nhar
-                        Log.e("FileUpload", "Upload failed: ${exception.message}")
-                    }
+                        .addOnFailureListener { exception ->
+                            // Handle any errors kash nhar
+                            Log.e("FileUpload", "Upload failed: ${exception.message}")
+                        }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
-    private fun saveFileUrlToDatabase(fileUrl: String, fileName:String) {
-        val messageId = chatsRef.child(currentUserUid).child(therapistId).push().key
+    private fun getFileExtension(fileName: String): String {
+        val dotIndex = fileName.lastIndexOf('.')
+        return if (dotIndex > 0 && dotIndex < fileName.length - 1) {
+            fileName.substring(dotIndex + 1)
+        } else {
+            "txt" // Default extension if file extension makansh
+        }
+    }
 
-        if (messageId != null) {
-            val message = Message(currentUserUid, therapistId, fileName, fileUrl)
-            chatsRef.child(currentUserUid).child(therapistId).child(messageId).setValue(message)
-            chatsRef.child(therapistId).child(currentUserUid).child(messageId).setValue(message)
+    private suspend fun saveFileUrlToDatabase(fileUrl: String, fileName: String) {
+        withContext(Dispatchers.IO) {
+            val messageId = chatsRef.child(currentUserUid).child(therapistId).push().key
 
-            addContactIfNotExists(therapistId)
+            if (messageId != null) {
+                val message = Message(currentUserUid, therapistId, fileName, fileUrl)
+                chatsRef.child(currentUserUid).child(therapistId).child(messageId).setValue(message)
+                chatsRef.child(therapistId).child(currentUserUid).child(messageId).setValue(message)
+
+                addContactIfNotExists(therapistId)
+            }
         }
     }
 
@@ -405,19 +440,15 @@ class ConversationFragment : Fragment() {
         return binding.web.isVisible
     }
 
-    fun onBackPressed() {
-        if (isWebVisible()) {
-            hideWebView()
-        }
-    }
 
     private fun createAudioFile(): File {
-        val audioFileName = "audio_${System.currentTimeMillis()}.3gp"
+        val audioFileName = "audio_${System.currentTimeMillis()}.mp3"
         val storageDir = requireContext().getExternalFilesDir(null)
         return File.createTempFile(audioFileName, ".mp3", storageDir)
     }
 
     private fun startRecording() {
+        Log.d("isrecording", isRecording.toString())
         if (isRecording) return
 
         binding.bottom.setBackgroundResource(R.drawable.bttn)
@@ -437,10 +468,10 @@ class ConversationFragment : Fragment() {
         audioFile = createAudioFile()
         audioRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4) // Use MPEG-4 format
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)    // Use AAC encoder for better quality
-            setAudioEncodingBitRate(128000)                   // Set bitrate (adjust as needed)
-            setAudioSamplingRate(44100)                        // Set sampling rate (adjust as needed)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setAudioEncodingBitRate(128000)
+            setAudioSamplingRate(44100)
             setOutputFile(audioFile.absolutePath)
             try {
                 prepare()
@@ -454,48 +485,55 @@ class ConversationFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun stopRecording() {
+        Log.d("isrecording", isRecording.toString())
         if (!isRecording) return
 
         binding.bottom.setBackgroundResource(R.drawable.defaultt)
         audioRecorder.apply {
             stop()
             release()
+            isRecording = false
         }
-        isRecording = false
 
-        uploadAudio(Uri.fromFile(audioFile))
+
+        CoroutineScope(Dispatchers.IO).launch { uploadAudio(Uri.fromFile(audioFile)) }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun uploadAudio(audioUri: Uri) {
-        val fileName = getFileNameFromUri(audioUri)
-        val fileRef = storageRef.child("audio/${System.currentTimeMillis()}_${audioUri.lastPathSegment}")
+    private suspend fun uploadAudio(audioUri: Uri) {
+        withContext(Dispatchers.IO) {
+            getFileNameFromUri(audioUri)
+            val fileRef = storageRef.child("audio/${System.currentTimeMillis()}_${audioUri.lastPathSegment}")
 
-        fileRef.putFile(audioUri)
-            .addOnSuccessListener { taskSnapshot ->
-                fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                    val audioUrl = downloadUri.toString()
-                    saveAudioUrlToDatabase(audioUrl, fileName)
+            fileRef.putFile(audioUri)
+                .addOnSuccessListener { _ ->
+                    fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        val audioUrl = downloadUri.toString()
+                        CoroutineScope(Dispatchers.IO).launch { saveAudioUrlToDatabase(audioUrl) }
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("AudioUpload", "Upload failed: ${exception.message}")
-            }
-    }
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveAudioUrlToDatabase(audioUrl: String, fileName: String) {
-
-        val timestamp = getCurrentTimestamp()
-        val messageId = chatsRef.child(currentUserUid).child(therapistId).push().key
-
-        if (messageId != null) {
-            val message = Message(currentUserUid, therapistId, timestamp, "" ,audioUrl)
-            chatsRef.child(currentUserUid).child(therapistId).child(messageId).setValue(message)
-            chatsRef.child(therapistId).child(currentUserUid).child(messageId).setValue(message)
-
-            addContactIfNotExists(therapistId)
+                .addOnFailureListener { exception ->
+                    Log.e("AudioUpload", "Upload failed: ${exception.message}")
+                }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun saveAudioUrlToDatabase(audioUrl: String) {
+        withContext(Dispatchers.IO) {
+            val timestamp = getCurrentTimestamp()
+            val messageId = chatsRef.child(currentUserUid).child(therapistId).push().key
+
+            if (messageId != null) {
+                val message = Message(currentUserUid, therapistId, timestamp, "", audioUrl)
+                chatsRef.child(currentUserUid).child(therapistId).child(messageId).setValue(message)
+                chatsRef.child(therapistId).child(currentUserUid).child(messageId).setValue(message)
+
+                addContactIfNotExists(therapistId)
+            }
+        }
+    }
+
     @SuppressLint("Range")
     private fun getFileNameFromUri(uri: Uri): String {
         var fileName = ""

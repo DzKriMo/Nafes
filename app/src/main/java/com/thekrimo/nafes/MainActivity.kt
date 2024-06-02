@@ -4,21 +4,20 @@ package com.thekrimo.nafes
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.thekrimo.nafes.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
@@ -49,30 +48,38 @@ class MainActivity : BaseActivity() {
 
 
 
+        val fragmentTag = intent.getStringExtra("fragmentTag")
+        if (fragmentTag == "Chat") {
+            replaceFragment(ConversationFragment(), "ConversationFragment")
+        }
 
 
 
 
 
 
-       bottomNavigation = binding.bottomNavigation
-        replaceFragment(HomeFragment(), "HomeFragment") // Set the initial fragment with its tag
+
+
+
+
+        bottomNavigation = binding.bottomNavigation
+        replaceFragment(HomeFragment(), "HomeFragment")
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_home -> {
-                    delaySwitchFragment(HomeFragment(), "HomeFragment")
+                    replaceFragment(HomeFragment(), "HomeFragment")
                     true
                 }
                 R.id.navigation_profile -> {
-                    delaySwitchFragment(ProfileFragment(), "ProfileFragment")
+                    replaceFragment(ProfileFragment(), "ProfileFragment")
                     true
                 }
                 R.id.navigation_community -> {
-                    delaySwitchFragment(CommunityFragment(), "CommunityFragment")
+                    replaceFragment(CommunityFragment(), "CommunityFragment")
                     true
                 }
                 R.id.navigation_Chat -> {
-                    delaySwitchFragment(ConversationFragment(), "ConversationFragment")
+                    replaceFragment(ConversationFragment(), "ConversationFragment")
                     true
                 }
                 else -> false
@@ -100,42 +107,44 @@ class MainActivity : BaseActivity() {
 
 
 
-    private fun fetchUserName(){
-        val firebaseUser = FirebaseAuth.getInstance().currentUser
-        val userId = firebaseUser?.uid
+    private fun fetchUserName() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            val userId = firebaseUser?.uid
 
-        if (userId!=null){
-            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId)
+            if (userId != null && !isFinishing) {
+                val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId)
 
-            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        userName = snapshot.child("username").getValue(String::class.java) ?: ""
-                        userEmail = snapshot.child("email").getValue(String::class.java) ?: ""
-                        // images and what they do
-                        saveLocally(userName,userEmail)
+                databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            userName = snapshot.child("username").getValue(String::class.java) ?: ""
+                            userEmail = snapshot.child("email").getValue(String::class.java) ?: ""
 
+                            saveLocally(userName, userEmail)
+
+
+                            val fragmentTag = intent.getStringExtra("fragmentTag")
+                            if (fragmentTag == "Chat") {
+                                bottomNavigation.selectedItemId = R.id.navigation_Chat
+                                replaceFragment(ConversationFragment(), "ConversationFragment")
+                            }
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle error if data retrieval fails Kash nhar
+                    override fun onCancelled(error: DatabaseError) {
+                        // Handle error if data retrieval fails Kash nhar
+                    }
+                })
             }
-
-        })
         }
-
-
     }
+
     private fun getIndexForFragment(fragmentTag: String): Int {
         return menuItems.indexOf(fragmentTag)
     }
 
-    private fun delaySwitchFragment(fragment: Fragment, tag: String, args: Bundle? = null) {
-
-            replaceFragment(fragment, tag)
-
-    }
+   
     private fun saveLocally(name: String,email:String) {
         val sharedPreferences = getSharedPreferences("username", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -157,34 +166,30 @@ class MainActivity : BaseActivity() {
 
 
 
-    private fun replaceFragment(fragment: Fragment, tag: String, args: Bundle? = null) {
-
-
+    private fun replaceFragment(fragment: Fragment, tag: String) {
         if (currentFragmentTag != tag) {
+
+            val transaction = supportFragmentManager.beginTransaction()
             val currentIndex = getIndexForFragment(currentFragmentTag ?: "")
             val targetIndex = getIndexForFragment(tag)
-
+            currentFragmentTag = tag
             val directionTransition = if (currentIndex < targetIndex) {
                 Pair(R.anim.animate_slide_left_enter, R.anim.animate_slide_left_exit)
             } else {
                 Pair(R.anim.animate_slide_in_left, R.anim.animate_slide_out_right)
             }
 
-
             val (enterAnim, exitAnim) = directionTransition
-            supportFragmentManager.beginTransaction()
-                .setCustomAnimations(enterAnim, exitAnim)
-                .replace(R.id.fragment_container, fragment, tag)
-                .commit()
-
-            currentFragmentTag = tag
-            Log.d("fragment replaced!!", "replaceFragment: ")
+            transaction.setCustomAnimations(enterAnim, exitAnim)
+            transaction.replace(R.id.fragment_container, fragment, tag)
+            transaction.commitAllowingStateLoss()
         }
     }
+
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val conversationFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (conversationFragment is ConversationFragment && conversationFragment.isVisible &&conversationFragment.isWebVisible()) {
-            // If the ConversationFragment is visible and WebView is visible, hide the WebView
             conversationFragment.hideWebView()
         } else {
             // Perform default back button behavior

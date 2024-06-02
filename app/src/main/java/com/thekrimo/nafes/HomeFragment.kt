@@ -1,6 +1,6 @@
 package com.thekrimo.nafes
 
-import android.content.ContentValues.TAG
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,22 +8,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.GridView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.messaging.FirebaseMessaging
 import com.thekrimo.nafes.databinding.FragmentHomeBinding
-import java.text.DateFormatSymbols
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.*
+
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -54,7 +55,15 @@ class HomeFragment : Fragment() {
             binding.therapistName.text = therapistData[0]
             TherapistId = therapistData[1]
         }
-        fetchTherapist()
+        CoroutineScope(Dispatchers.IO).launch{fetchTherapist()}
+
+        val sqlId =  getTherapistNameById(TherapistId.toInt())
+        if (sqlId != null) {
+              TherapistName = sqlId
+            binding.therapistName.text = sqlId
+            Log.d("API Response", sqlId)
+
+        }
     }
 
     override fun onDestroyView() {
@@ -62,7 +71,8 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun fetchTherapist() {
+    private suspend fun fetchTherapist() {
+        withContext(Dispatchers.IO){
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val userId = firebaseUser?.uid
 
@@ -71,11 +81,14 @@ class HomeFragment : Fragment() {
 
             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
+                    if (isAdded && snapshot.exists()) {
                         TherapistName = snapshot.child("therapistName").getValue(String::class.java) ?: ""
                         TherapistId = snapshot.child("therapistID").getValue(String::class.java) ?: ""
-                        binding.therapistName.text = TherapistName
-                        saveLocaly(TherapistName, TherapistId)
+                        _binding?.let {
+                            it.therapistName.text = TherapistName
+                        }
+                        if(isAdded){saveLocally(TherapistName, TherapistId)}
+
                     }
                 }
 
@@ -85,20 +98,55 @@ class HomeFragment : Fragment() {
 
             })
         }
-    }
+    }}
 
-    private fun saveLocaly(name: String, Id: String) {
+    private fun saveLocally(name: String, id: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("therapist_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("therapist", name)
-        editor.putString("id", Id)
+        editor.putString("id", id)
         editor.apply()
     }
 
     private fun loadLocally(): List<String> {
         val sharedPreferences = requireActivity().getSharedPreferences("therapist_data", Context.MODE_PRIVATE)
         val name = sharedPreferences.getString("therapist", "") ?: ""
-        val ID = sharedPreferences.getString("id", "") ?: ""
-        return listOf(name, ID)
+        val id = sharedPreferences.getString("id", "") ?: ""
+        return listOf(name, id)
     }
+
+
+    fun getTherapistNameById(id: Int): String? {
+        val urlString = "https://expert-duck-pleasing.ngrok-free.app/api/therapists/show/$id" // Replace with your actual API URL
+        val url = URL(urlString)
+        val connection = url.openConnection() as HttpURLConnection
+
+        return try {
+            connection.requestMethod = "GET"
+            connection.connectTimeout = 5000
+            connection.readTimeout = 5000
+
+            val responseCode = connection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                val response = reader.readText()
+                reader.close()
+
+                val jsonResponse = JSONObject(response)
+                Log.d("API Response", jsonResponse.toString())
+                val therapist = jsonResponse.getJSONObject("therapist")
+                therapist.getString("name")
+            } else {
+                println("Error: ${connection.responseMessage}")
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+
 }

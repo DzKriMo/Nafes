@@ -6,5 +6,4 @@ data class Post(
     var content: String? = "",
     var postedOn: String? = ""
 ) {
-    constructor() : this("", "", "", "")
 }

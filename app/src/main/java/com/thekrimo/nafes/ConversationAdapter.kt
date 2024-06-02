@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Paint
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Environment
@@ -74,7 +75,7 @@ class ConversationAdapter(
 
     fun addMessage(message: Message) {
         messagesList.add(message)
-        notifyDataSetChanged()
+        notifyItemInserted(messagesList.size - 1)
     }
 
     fun getLastItemPosition(): Int {
@@ -93,7 +94,7 @@ class ConversationAdapter(
                 updatePlayButtonIcon(position)
                 playButton.setOnClickListener {
                     if (currentPlayingPosition == position) {
-                        stopAudio()
+                        stopAudio(position)
                     } else {
                         playAudio(message.audioUrl, position)
                     }
@@ -107,6 +108,12 @@ class ConversationAdapter(
                     openMessageLink(itemView.context, message.messageLink)
                 }
             }
+            if (message.messageLink.isNotEmpty()) {
+                sentMessageTextView.paintFlags = sentMessageTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            } else {
+                sentMessageTextView.paintFlags = sentMessageTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
+            }
+
             sentMessageTextView.setOnLongClickListener {
                 val clipboardManager = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Copied Text", message.message)
@@ -128,7 +135,7 @@ class ConversationAdapter(
                 updatePlayButtonIcon(position)
                 playButton.setOnClickListener {
                     if (currentPlayingPosition == position) {
-                        stopAudio()
+                        stopAudio(position)
                     } else {
                         playAudio(message.audioUrl, position)
                     }
@@ -143,6 +150,13 @@ class ConversationAdapter(
                 }
             }
 
+
+            if (message.messageLink.isNotEmpty()) {
+                receivedMessageTextView.paintFlags = receivedMessageTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            } else {
+                receivedMessageTextView.paintFlags = receivedMessageTextView.paintFlags and Paint.UNDERLINE_TEXT_FLAG.inv()
+            }
+
             receivedMessageTextView.setOnLongClickListener {
                 val clipboardManager = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Copied Text", message.message)
@@ -153,8 +167,7 @@ class ConversationAdapter(
     }
 
     private fun playAudio(audioUrl: String, position: Int) {
-        // Stop any previously playing audio
-        stopAudio()
+        stopAudio(currentPlayingPosition)
 
         currentPlayingPosition = position
 
@@ -167,7 +180,7 @@ class ConversationAdapter(
                     updatePlayButtonIcon(position)
                 }
                 setOnCompletionListener {
-                    stopAudio()
+                    stopAudio(currentPlayingPosition)
                     updatePlayButtonIcon(position)
                     currentPlayingPosition = RecyclerView.NO_POSITION
                 }
@@ -178,34 +191,38 @@ class ConversationAdapter(
         }
     }
 
-    private fun updatePlayButtonIcon(position: Int) {
-        val playIcon = if (currentPlayingPosition == position) R.drawable.stop else R.drawable.play
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
-        if (viewHolder != null && viewHolder is SentMessageViewHolder) {
-            viewHolder.playButton.setBackgroundResource(playIcon)
-        } else if (viewHolder != null && viewHolder is ReceivedMessageViewHolder) {
-            viewHolder.playButton.setBackgroundResource(playIcon)
-        }
-    }
-
-    private fun stopAudio() {
+    private fun stopAudio(position: Int) {
         mediaPlayer?.let {
             if (it.isPlaying) {
                 it.stop()
             }
-            it.release()
+            it.reset()
             mediaPlayer = null
-            updatePlayButtonIcon(currentPlayingPosition)
             currentPlayingPosition = RecyclerView.NO_POSITION
+            updatePlayButtonIcon(position)
         }
     }
+
+    private fun updatePlayButtonIcon(position: Int) {
+        val playIcon = if (currentPlayingPosition == position) R.drawable.stop else R.drawable.play
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position)
+        if (viewHolder != null) {
+            if (viewHolder is SentMessageViewHolder) {
+                viewHolder.playButton.setBackgroundResource(playIcon)
+            } else if (viewHolder is ReceivedMessageViewHolder) {
+                viewHolder.playButton.setBackgroundResource(playIcon)
+            }
+        }
+    }
+
+
 
     private fun openMessageLink(context: Context, link: String) {
         val imageExtensions = arrayOf("png", "jpg", "jpeg", "gif", "bmp")
         val fileExtension = MimeTypeMap.getFileExtensionFromUrl(link)
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
-        if ((mimeType != null && imageExtensions.any { mimeType.contains(it) }) || link.contains("IMG")|| link.contains("img")|| link.contains("jpg")|| link.contains("jpeg")|| link.contains("png")|| link.contains("gif")|| link.contains("svg")) {
+        if ((mimeType != null && imageExtensions.any { mimeType.contains(it) }) || link.contains("IMG")|| link.contains("img")||link.contains("image")|| link.contains("jpg")|| link.contains("jpeg")|| link.contains("png")|| link.contains("gif")|| link.contains("svg")) {
             val imageView = ImageView(context)
             Picasso.get().load(link).into(imageView)
 

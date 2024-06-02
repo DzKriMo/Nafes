@@ -1,7 +1,7 @@
 package com.thekrimo.nafes
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,18 +12,17 @@ import androidx.core.content.ContextCompat
 import com.thekrimo.nafes.databinding.ActivityCalenderBinding
 import java.text.DateFormatSymbols
 import java.util.Calendar
-import android.content.Intent
-import android.widget.GridView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import com.thekrimo.nafes.databinding.FragmentHomeBinding
-import java.util.*
+
 
 class CalenderActivity : BaseActivity() {
     private lateinit var binding: ActivityCalenderBinding
     private lateinit var adapter: DayAdapter
     private var currentMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
+    private var todaysMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
     private var currentYear: Int = Calendar.getInstance().get(Calendar.YEAR)
+    private var todaysYear: Int = Calendar.getInstance().get(Calendar.YEAR)
+    private var today: Int = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +48,24 @@ class CalenderActivity : BaseActivity() {
 
         adapter.setOnItemClickListener { position ->
             val clickedDay = adapter.getItem(position)
+            if (clickedDay != null) {
+                if((currentYear>todaysYear)||((currentYear==todaysYear)&&(todaysMonth>currentMonth))||((currentYear==todaysYear)&&(todaysMonth==currentMonth)&&(today>clickedDay.toInt()))){
+                    Toast.makeText(baseContext,"Please select a valid day",Toast.LENGTH_SHORT).show()
+                } else{
+                    val intent = Intent(this,dayPick::class.java)
+                    intent.putExtra("day",clickedDay)
+                    intent.putExtra("month",currentMonth)
+                    intent.putExtra("year",currentYear)
+                    startActivity(intent)
+                    finish()
 
-            Toast.makeText(
-                this, clickedDay,
-                Toast.LENGTH_SHORT
-            ).show()
+                }
+            }
+
+
+
+
+
 
             // here  nzid logic t3 passing the date to the scheduling activity/fragment
         }

@@ -1,21 +1,13 @@
 package com.thekrimo.nafes
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
-import android.view.View
-import android.view.animation.LinearInterpolator
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.thekrimo.nafes.databinding.ActivityLoginBinding
-import okhttp3.OkHttpClient
+
 
 class Login : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -26,7 +18,7 @@ class Login : BaseActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
-        val okHttpClient = OkHttpClient()
+
 
 
 

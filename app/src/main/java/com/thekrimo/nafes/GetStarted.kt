@@ -1,17 +1,11 @@
 package com.thekrimo.nafes
 
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.thekrimo.nafes.databinding.ActivityGetStartedBinding
-import kotlin.math.log
 
 class GetStarted : BaseActivity() {
     private lateinit var binding: ActivityGetStartedBinding
@@ -41,6 +35,7 @@ class GetStarted : BaseActivity() {
 
 
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (backPressedOnce) {
             super.onBackPressed()
@@ -58,11 +53,5 @@ class GetStarted : BaseActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-
-    fun openLink(link: String){
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(link)
-        startActivity(intent)
-    }
 
 }

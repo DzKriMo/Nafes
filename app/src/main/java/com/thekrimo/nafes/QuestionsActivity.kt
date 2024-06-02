@@ -1,8 +1,8 @@
 package com.thekrimo.nafes
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,14 +12,25 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.thekrimo.nafes.databinding.ActivityGetStartedBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.thekrimo.nafes.databinding.ActivityQuestionsBinding
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
+
+@Suppress("DEPRECATION")
 class QuestionsActivity : BaseActivity() {
     private lateinit var binding: ActivityQuestionsBinding
     private var currentQuestionIndex = 0
     private var backPressedOnce = false
-    val questionsList = listOf(
+    private var thid = "1"
+    private var thname = "Akram"
+    private val questionsList = listOf(
         Question(
             "What is your gender?",
             listOf(
@@ -30,20 +41,20 @@ class QuestionsActivity : BaseActivity() {
         Question(
             "How old are you?",
             listOf(
-                Answer("", -2, 2) // Numerical Answer
+                Answer("", -2, 2) 
             )
         ),
         Question(
             "What is your residency? (Please specify your state of residence)",
             listOf(
-                Answer("", -2, 3) // Numerical Answer (Based on the state number)
+                Answer("", -2, 3)
             )
         ),
         Question(
             "Have you ever had therapy before?",
             listOf(
-                Answer("Yes", -1, 4), // If Yes, next question
-                Answer("No", 2, 5)    // If No, next question
+                Answer("Yes", -1, 4),
+                Answer("No", 2, 5)
             )
         ),
         Question(
@@ -265,67 +276,73 @@ class QuestionsActivity : BaseActivity() {
         )
         layoutParams.topMargin = resources.getDimensionPixelSize(R.dimen.button_top_margin)
 
-        if (index == 1) {
-            // Handle age selection
-            binding.answersRadioGroup.visibility = View.GONE
-            binding.ageStateLayout.visibility = View.VISIBLE
-            binding.stateSpinner.visibility = View.GONE
-            binding.ageSpinner.visibility = View.VISIBLE
+        when (index) {
+            1 -> {
+                // Handle age selection
+                binding.answersRadioGroup.visibility = View.GONE
+                binding.ageStateLayout.visibility = View.VISIBLE
+                binding.stateSpinner.visibility = View.GONE
+                binding.ageSpinner.visibility = View.VISIBLE
 
-            binding.nextButton.setOnClickListener {
-                val age = binding.ageSpinner.selectedItem.toString()
-                userAnswers.add( age.toInt())
-                currentQuestionIndex = 2
-                showQuestion(currentQuestionIndex)
-            }
-        } else if (index == 2) {
-            // Handle state selection
-            binding.answersRadioGroup.visibility = View.GONE
-            binding.ageStateLayout.visibility = View.VISIBLE
-            binding.stateSpinner.visibility = View.VISIBLE
-            binding.ageSpinner.visibility = View.GONE
-            binding.donthave.visibility = View.GONE
-            binding.nextButton.setOnClickListener {
-                val statePosition = binding.stateSpinner.selectedItemPosition
-                val stateNumber = statePosition + 1
-                userAnswers.add(stateNumber)
-                currentQuestionIndex = 3
-                showQuestion(currentQuestionIndex)
-            }
-        } else {
-            // Show regular question and answers
-            binding.answersRadioGroup.visibility = View.VISIBLE
-            binding.ageStateLayout.visibility = View.GONE
-            for (answer in question.answers) {
-                val button = Button(this)
-                button.text = answer.answerText
-                button.setBackgroundResource(R.drawable.bttn)
-                button.layoutParams = layoutParams
-
-                button.setOnClickListener {
-                    if(answer.weight!=-1)userAnswers.add( answer.weight)
-                    currentQuestionIndex = answer.nextQuestionIndex
-                    if (currentQuestionIndex == 69420) {
-                        openLink("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-                    }
-                    if (currentQuestionIndex == 24) {
-                        Log.d("UserAnswers", userAnswers.toString())
-                        startActivity(Intent(this, MainActivity::class.java))
-
-
-                    }
-                    if ((currentQuestionIndex < questionsList.size) && currentQuestionIndex != -1) {
-                        showQuestion(currentQuestionIndex)
-                    } else {
-                        // Handle end of questions
-                    }
+                binding.nextButton.setOnClickListener {
+                    val age = binding.ageSpinner.selectedItem.toString()
+                    userAnswers.add( age.toInt())
+                    currentQuestionIndex = 2
+                    showQuestion(currentQuestionIndex)
                 }
-                binding.answersRadioGroup.addView(button)
+            }
+            2 -> {
+                // Handle state selection
+                binding.answersRadioGroup.visibility = View.GONE
+                binding.ageStateLayout.visibility = View.VISIBLE
+                binding.stateSpinner.visibility = View.VISIBLE
+                binding.ageSpinner.visibility = View.GONE
+                binding.donthave.visibility = View.GONE
+                binding.nextButton.setOnClickListener {
+                    val statePosition = binding.stateSpinner.selectedItemPosition
+                    val stateNumber = statePosition + 1
+                    userAnswers.add(stateNumber)
+                    currentQuestionIndex = 3
+                    showQuestion(currentQuestionIndex)
+                }
+            }
+            else -> {
+                // Show regular question and answers
+                binding.answersRadioGroup.visibility = View.VISIBLE
+                binding.ageStateLayout.visibility = View.GONE
+                for (answer in question.answers) {
+                    val button = Button(this)
+                    button.text = answer.answerText
+                    button.setBackgroundResource(R.drawable.bttn)
+                    button.layoutParams = layoutParams
+
+                    button.setOnClickListener {
+                        if(answer.weight!=-1)userAnswers.add( answer.weight)
+                        currentQuestionIndex = answer.nextQuestionIndex
+                        if (currentQuestionIndex == 69420) {
+                            openLink("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                        }
+                        if (currentQuestionIndex == 24) {
+                            Log.d("UserAnswers", userAnswers.toString())
+
+                            makeApiRequest(userAnswers)
+
+
+                        }
+                        if ((currentQuestionIndex < questionsList.size) && currentQuestionIndex != -1) {
+                            showQuestion(currentQuestionIndex)
+                        } else {
+                            // Handle end of questions aka achref's api
+                        }
+                    }
+                    binding.answersRadioGroup.addView(button)
+                }
             }
         }
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (currentQuestionIndex != 0) {
             currentQuestionIndex -= 1
@@ -352,9 +369,86 @@ class QuestionsActivity : BaseActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun openLink(link: String) {
+    private fun openLink(link: String) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(link)
         startActivity(intent)
     }
+
+
+
+
+    @SuppressLint("SuspiciousIndentation")
+    private fun makeApiRequest(userResponses: List<Int>) {
+        val url = URL("https://expert-duck-pleasing.ngrok-free.app/NafesMatchingApi")
+        val jsonBody = JSONObject()
+        jsonBody.put("user_responses", JSONArray(userResponses))
+        val requestBody = jsonBody.toString()
+
+        Log.d("API Request Body", requestBody)  // Log the request body for debugging
+
+        thread {
+            var connection: HttpURLConnection? = null
+            try {
+                connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.doOutput = true
+
+                val outputStream = BufferedOutputStream(connection.outputStream)
+                outputStream.write(requestBody.toByteArray())
+                outputStream.flush()
+                outputStream.close()
+
+                val responseCode = connection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                    val response = StringBuilder()
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        response.append(line)
+                    }
+                    reader.close()
+
+                    val responseBody = response.toString()
+                    Log.d("API Response", responseBody)
+                    val str=  JSONArray(responseBody)
+                    val hh = str[0].toString()
+                    thid = hh[1].toString()
+                    Log.d("API Response", thid)
+                    // Handle the response here (e.g., show matched therapists)
+                    val firebaseUser = FirebaseAuth.getInstance().currentUser
+                    val userId = firebaseUser?.uid
+
+                    if (userId != null) {
+                        val db = FirebaseDatabase.getInstance().getReference("Users").child(userId)
+                          db.child("answers").setValue(userAnswers.toString())
+                          db.child("matching").setValue(responseBody)
+                          db.child("therapistID").setValue(thid)
+                        db.child("therapistName").setValue(thname)
+
+                    }
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+
+                } else {
+                    Log.e("API Error", "Response code: $responseCode")
+                    // Log error stream for more details
+                    val errorStream = BufferedReader(InputStreamReader(connection.errorStream))
+                    val errorResponse = StringBuilder()
+                    var errorLine: String?
+                    while (errorStream.readLine().also { errorLine = it } != null) {
+                        errorResponse.append(errorLine)
+                    }
+                    errorStream.close()
+                    Log.e("API Error Response", errorResponse.toString())
+                }
+            } catch (e: Exception) {
+                Log.e("API Exception", e.message ?: "Error")
+            } finally {
+                connection?.disconnect()
+            }
+        }
+    }
+
 }

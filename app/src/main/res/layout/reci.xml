@@ -29,6 +29,8 @@
             android:textColor="#000E08"
             android:id="@+id/receivedMessage"
             />
+
+
         <Button
             android:layout_width="30dp"
             android:layout_height="30dp"

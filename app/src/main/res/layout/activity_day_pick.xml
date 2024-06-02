@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".dayPick"
+    android:background="#E0ECDE">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="100dp"
+                android:text="Day"
+                android:textSize="22dp"
+                android:fontFamily="@font/abeezee"
+                android:textColor="#393939"
+                android:textFontWeight="600"
+                android:id="@+id/day"
+                />
+            <Button
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/blueback"
+                app:layout_constraintTop_toTopOf="@id/day"
+                android:layout_marginTop="-10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="20dp"
+                android:id="@+id/back"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="30dp"
+                app:layout_constraintTop_toBottomOf="@id/day"
+                android:layout_marginTop="20dp"
+                android:text="Every Session Takes 45 minutes"
+                android:textColor="#393939"
+                android:textSize="17dp"
+                android:fontFamily="@font/abeezee"
+                android:id="@+id/min"
+
+                />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/min"
+                android:layout_marginTop="20dp"
+                android:text="08:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn8"
+                />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn8"
+                android:layout_marginTop="20dp"
+                android:text="09:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn9"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn9"
+                android:layout_marginTop="20dp"
+                android:text="10:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn10"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn10"
+                android:layout_marginTop="20dp"
+                android:text="11:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn11"
+                />
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn11"
+                android:layout_marginTop="20dp"
+                android:text="13:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn13"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn13"
+                android:layout_marginTop="20dp"
+                android:text="14:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn14"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn14"
+                android:layout_marginTop="20dp"
+                android:text="15:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn15"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/button_available_bg"
+                app:layout_constraintTop_toBottomOf="@id/btn15"
+                android:layout_marginTop="20dp"
+                android:text="16:00"
+                android:textColor="#2C6975"
+                android:textFontWeight="600"
+                android:fontFamily="@font/abeezee"
+                android:textSize="16dp"
+                android:id="@+id/btn16"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginHorizontal="30dp"
+                app:layout_constraintTop_toBottomOf="@id/btn16"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Red Buttons are for Already booked meetings"
+                android:textColor="#393939"
+                android:textSize="17dp"
+                android:fontFamily="@font/abeezee"
+                android:id="@+id/bottom"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

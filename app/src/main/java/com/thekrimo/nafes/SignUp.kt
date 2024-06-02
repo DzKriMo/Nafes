@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -13,6 +12,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.thekrimo.nafes.databinding.ActivitySignUpBinding
 
+@Suppress("DEPRECATION")
 class SignUp : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
@@ -79,6 +79,7 @@ class SignUp : BaseActivity() {
         startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_GOOGLE_SIGN_IN) {
@@ -101,9 +102,7 @@ class SignUp : BaseActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success
-                    val user = auth.currentUser
-                    // Update UI
+
                     showToast("Google sign in success.")
                     startActivity(Intent(this,MainActivity::class.java))
                 } else {
@@ -117,7 +116,7 @@ class SignUp : BaseActivity() {
         Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
     }
 
-    fun saveUserToDatabase(username: String, email: String) {
+    private fun saveUserToDatabase(username: String, email: String) {
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         val userId = firebaseUser?.uid
 
@@ -131,12 +130,14 @@ class SignUp : BaseActivity() {
             userData["phone"] = ""
             userData["therapistID"] = ""
             userData["therapistName"] = ""
-
+            userData["image"]="https://e7.pngegg.com/pngimages/171/655/png-clipart-tarek-hamed-2018-world-cup-egypt-national-football-team-liga-mx-club-tijuana-hector-herrera-tshirt-photography-thumbnail.png"
+            userData["answers"]=""
+            userData["matching"]=""
             databaseReference.setValue(userData)
                 .addOnSuccessListener {
                     // Data successfully saved
                 }
-                .addOnFailureListener { e ->
+                .addOnFailureListener {
                     // Failed to save data
                 }
         }

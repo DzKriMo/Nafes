@@ -1,7 +1,6 @@
 package com.thekrimo.nafes
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.thekrimo.nafes.databinding.ActivityFoundBinding
 

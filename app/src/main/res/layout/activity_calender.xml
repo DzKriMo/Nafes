@@ -7,28 +7,44 @@
     tools:context=".CalenderActivity"
     android:background="#E0ECDE">
 
-    <ImageView
+    <FrameLayout
         android:id="@+id/prevMonthButton"
-        android:layout_width="10dp"
-        android:layout_height="20dp"
-        android:src="@drawable/img_6"
-        app:layout_constraintEnd_toStartOf="@id/monthNameTextView"
-        app:layout_constraintTop_toBottomOf="@id/back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginVertical="30dp"
-        />
+        app:layout_constraintEnd_toStartOf="@id/monthNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/back">
+
+        <ImageView
+
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:src="@drawable/img_6"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
 
 
-    <ImageView
+    <FrameLayout
         android:id="@+id/nextMonthButton"
-        android:layout_width="10dp"
-        android:layout_height="20dp"
-        android:src="@drawable/img_5"
-
-        app:layout_constraintTop_toBottomOf="@id/back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="20dp"
-        app:layout_constraintStart_toEndOf="@id/monthNameTextView"
-        android:layout_marginVertical="30dp"/>
+        android:layout_marginVertical="30dp"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintStart_toEndOf="@id/monthNameTextView">
+
+        <ImageView
+
+            android:layout_width="10dp"
+            android:layout_height="20dp"
+            android:src="@drawable/img_5"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
     <TextView
         android:id="@+id/monthNameTextView"
         android:layout_width="wrap_content"
